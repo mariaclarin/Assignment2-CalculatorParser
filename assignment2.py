@@ -41,33 +41,33 @@ def term(token):
 
 # THIS IS THE MAIN PART OF THE PROBLEM I CANT WORK IT OUTHJABDHJSBAHDBASH
 def factor(token):
-    print("factor")
+  print("factor")
     #the input goes straight into the else which prints error and exits
     #if u use ' if not token.isdigit() it works and if u try printing token before the if else, it prints the entire token
     #im guessing its bcs the program reads the input string as a whole string and not individual characters so need to 
     #somehow deal w that so it reads by char and not the whole thing maybe?
 
     #print(token)
-    if token.isdigit():
-        print("if")
-        temp = int(token)
-        #this input() is also a problem i think bcs dia jd minta user input again? but when i search 
-        # it up it basically says its necessary to read the rest of the token input 
-        token = input()
-        if token == "*":
-            print("if if ")
-            match(token, "*")
-            temp *= factor(token)
-    elif token == "(":
-        print("elif")
-        match(token, "(")
-        temp = expr(token)
-        match(token, ")")
+  if token.isdigit():
+    print("if")
+    temp = int(token)
+    #this input() is also a problem i think bcs dia jd minta user input again? but when i search 
+    # it up it basically says its necessary to read the rest of the token input 
+    token = input()
+    if token == "*":
+        print("if if ")
+        match(token, "*")
+        temp *= factor(token)
+  elif token == "(":
+    print("elif")
+    match(token, "(")
+    temp = expr(token)
+    match(token, ")")
 
-    else:
-        error()
+  else:
+    error()
 
-    return temp
+  return temp
 
 def main():
   print("A RECURSIVE-DESCENT CALCULATOR.")
