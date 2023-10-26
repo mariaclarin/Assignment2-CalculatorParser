@@ -1,10 +1,8 @@
-import sys
-
 tokens = []
 
 def error():
-    sys.stderr.write("Error\n")
-    sys.exit(1)
+    print("Error")
+    exit(1)
 
 def match(expected_token):
     global tokens
@@ -80,19 +78,27 @@ def factor():
 def main():
     global tokens
     result = 0
+    print("\n==========================================================")
     print("A RECURSIVE-DESCENT CALCULATOR.")
-    print("\t the valid operations are +, - and *")
-    print("Enter the calculation string, e.g. '34+6*56'")
-    
-    inputtoken = input()
-    tokens.extend(inputtoken.replace(" ", "")) 
+    print("\t the valid operations are +, -, *, /, and %")
+    print("Enter the calculation string, e.g. '34+6*56/5%3': ")
 
-    result = expr()
-    
-    if not tokens:
-        print("Result =", result)
-    else:
-        error()
+    while True:
+        input_token =input(">> ")
+        tokens.clear() 
+        tokens.extend(input_token.replace(" ", ""))
+        
+        try:
+            result = expr()
+            if not tokens:
+                print("Result =", result)
+                print("==========================================================\n")
+                break
+            else:
+                print("Invalid input string, please re-enter.")
 
-if __name__ == "__main__":
-    main()
+        except:
+                print("Invalid input string, please re-enter.")
+
+
+main()
