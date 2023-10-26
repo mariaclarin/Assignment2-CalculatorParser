@@ -1,71 +1,98 @@
 import sys
 
-# Global variable for the token
-token = ' '
-
+tokens = []
 
 def error():
     sys.stderr.write("Error\n")
     sys.exit(1)
 
-
 def match(expected_token):
-    global token
-    if token == expected_token:
-        token = sys.stdin.read(1)
+    global tokens
+    if tokens and tokens[0] == expected_token:
+        tokens.pop(0)
     else:
         error()
 
-
 def expr():
+    global tokens
+    while tokens and tokens[0].isspace():
+        tokens.pop(0)
+    if not tokens:
+        return 0
+
     temp = term()
-    while token in ('+', '-'):
-        if token == '+':
+    while tokens and tokens[0] in ('+', '-', '%', '/'):
+        while tokens and tokens[0].isspace():
+            tokens.pop(0)
+        if not tokens:
+            break
+        if tokens[0] == '+':
             match('+')
             temp += term()
-        elif token == '-':
+        elif tokens[0] == '-':
             match('-')
             temp -= term()
+        elif tokens[0] == '%':
+            match('%')
+            temp %= term()
+        elif tokens[0] == '/':
+            match('/')
+            temp /= term()
     return temp
 
-
 def term():
+    global tokens
+    while tokens and tokens[0].isspace():
+        tokens.pop(0)
+    if not tokens:
+        return 0
+
     temp = factor()
-    while token == '*':
+    while tokens and tokens[0] == '*':
+        while tokens and tokens[0].isspace():
+            tokens.pop(0)
+        if not tokens:
+            break
         match('*')
         temp *= factor()
     return temp
 
-
 def factor():
-    global token
+    global tokens
+    while tokens and tokens[0].isspace():
+        tokens.pop(0)
+    if not tokens:
+        return 0
+
     temp = 0
-    if token == '(':
+    if tokens[0] == '(':
         match('(')
         temp = expr()
         match(')')
-    elif token.isdigit():
-        while token.isdigit():
-            temp = temp * 10 + int(token)
-            token = sys.stdin.read(1)
+    elif tokens[0].isdigit():
+        while tokens and tokens[0].isdigit():
+            temp = temp * 10 + int(tokens[0])
+            tokens.pop(0)
     else:
         error()
     return temp
 
-
 def main():
-    global token
+    global tokens
     result = 0
     print("A RECURSIVE-DESCENT CALCULATOR.")
     print("\t the valid operations are +, - and *")
     print("Enter the calculation string, e.g. '34+6*56'")
-    token = sys.stdin.read(1)
+    
+    inputtoken = input()
+    tokens.extend(inputtoken.replace(" ", "")) 
+
     result = expr()
-    if token == '\n':
+    
+    if not tokens:
         print("Result =", result)
     else:
         error()
-
 
 if __name__ == "__main__":
     main()
