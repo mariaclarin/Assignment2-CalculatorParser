@@ -1,104 +1,123 @@
-tokens = []
+import sys
 
-def error():
-    print("Error")
-    exit(1)
 
-def match(expected_token):
-    global tokens
-    if tokens and tokens[0] == expected_token:
-        tokens.pop(0)
-    else:
-        error()
+# Global variable for the token
+token = ' '
+i = 0
+
+# Early error detection 
+class Error(Exception):
+    pass
 
 def expr():
-    global tokens
-    while tokens and tokens[0].isspace():
-        tokens.pop(0)
-    if not tokens:
-        return 0
+    global token, i
+    try:
+        temp = term()
+        while i < len(token) and token[i] in ('+', '-'):
+            if token[i] == '+':
+                i += 1
+                temp += term()
+            elif token[i] == '-':
+                i += 1
+                temp -= term()
+        return temp
+    except Error:
+        raise Error("Invalid ")
 
-    temp = term()
-    while tokens and tokens[0] in ('+', '-', '%', '/'):
-        while tokens and tokens[0].isspace():
-            tokens.pop(0)
-        if not tokens:
-            break
-        if tokens[0] == '+':
-            match('+')
-            temp += term()
-        elif tokens[0] == '-':
-            match('-')
-            temp -= term()
-        elif tokens[0] == '%':
-            match('%')
-            temp %= term()
-        elif tokens[0] == '/':
-            match('/')
-            temp /= term()
-    return temp
 
 def term():
-    global tokens
-    while tokens and tokens[0].isspace():
-        tokens.pop(0)
-    if not tokens:
-        return 0
+    global token, i
+    try:
+        temp = factor()
+        while i < len(token) and token[i] == '/':
+            i += 1
+            temp /= factor()
+        while i < len(token) and token[i] == '*':
+            i += 1
+            temp *= factor()
+        while i < len(token) and token[i] == '%':
+            i += 1
+            temp %= factor()
+        return temp
+    except Error:
+        raise Error("Invalid syntax")
 
-    temp = factor()
-    while tokens and tokens[0] == '*':
-        while tokens and tokens[0].isspace():
-            tokens.pop(0)
-        if not tokens:
-            break
-        match('*')
-        temp *= factor()
-    return temp
 
 def factor():
-    global tokens
-    while tokens and tokens[0].isspace():
-        tokens.pop(0)
-    if not tokens:
-        return 0
-
-    temp = 0
-    if tokens[0] == '(':
-        match('(')
+    global token, i
+    if i < len(token) and token[i] == '(':
+        i += 1
         temp = expr()
-        match(')')
-    elif tokens[0].isdigit():
-        while tokens and tokens[0].isdigit():
-            temp = temp * 10 + int(tokens[0])
-            tokens.pop(0)
+        if i < len(token) and token[i] == ')':
+            i += 1
+        else:
+            raise Error("Invalid Placement")
+    elif i < len(token) and token[i].isdigit():
+        start = i
+        while i < len(token) and token[i].isdigit():
+            i += 1
+        temp = int(token[start:i])
     else:
-        error()
+        raise Error("Invalid token")
     return temp
 
-def main():
-    global tokens
+class TreeNode:
+    def __init__(self, value, left=None, right=None):
+        self.value = value
+        self.left = left
+        self.right = right
+
+def tokenize_expr(expr):
+    operators = ['+', '-', '*', '/', '%']
+    tokens = []
+    current_token = ""
+    for char in expr:
+        if char in operators:
+            if current_token:
+                tokens.append(current_token)
+            tokens.append(char)
+            current_token = ""
+        else:
+            current_token += char
+    if current_token:
+        tokens.append(current_token)
+    return build_expr_tree(tokens)
+
+
+def build_expr_tree(tokens):
+    if len(tokens) == 1:
+        return TreeNode(tokens[0])
+    else:
+        operator = tokens.pop(1)
+        return TreeNode(operator, build_expr_tree(tokens[:1]), build_expr_tree(tokens[1:]))
+
+
+def print_tree(node, space=""):
+    if node:
+        print(space + node.value)
+        if node.left:
+            print_tree(node.left)
+        if node.right:
+            print_tree(node.right, space + " " * len(node.value))
+
+
+if __name__ == "__main__":
     result = 0
-    print("\n==========================================================")
     print("A RECURSIVE-DESCENT CALCULATOR.")
-    print("\t the valid operations are +, -, *, /, and %")
-    print("Enter the calculation string, e.g. '34+6*56/5%3': ")
+    print("\t the valid operations are +, - and *")
+    user_input = input("Enter the calculation string, e.g. '34+6*56': ")
+    #Tolerate empty space by removing it :) 
+    user_input = user_input.replace(" ", "")
+    parse_tree = tokenize_expr(user_input)
+    print_tree(parse_tree)
+    token = user_input + ' '
 
-    while True:
-        input_token =input(">> ")
-        tokens.clear() 
-        tokens.extend(input_token.replace(" ", ""))
-        
-        try:
-            result = expr()
-            if not tokens:
-                print("Result =", result)
-                print("==========================================================\n")
-                break
-            else:
-                print("Invalid input string, please re-enter.")
-
-        except:
-                print("Invalid input string, please re-enter.")
-
-
-main()
+    try:
+        result = expr()
+        if i == len(token) - 1:
+            print(f"Result = {result}")
+        else:
+            print("Error Detected ")
+            print("Syntax Error: Invalid input")
+    except Error as e:
+        print(f"Error: {e}")
