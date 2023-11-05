@@ -2,8 +2,8 @@
 The solution file is assignment2.py 
 * Class : L5AC
 * Members : 
-  * Nicholas Valerianus Budiman 2502055596 
-  * Maria Clarin 2501990331
+  * Nicholas Valerianus Budiman (2502055596)
+  * Maria Clarin (2501990331)
 
 
 ## Theoretical Assignment Answer
