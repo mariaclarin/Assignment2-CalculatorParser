@@ -20,8 +20,10 @@ The solution file is assignment2.py
 ![Screenshot2](/images/output2.png)<br />
 
 3. Successful Error Handling
+   
 ![Screenshot3](/images/output3.PNG)<br />
 
-4. Successful Whitespace Handling
+5. Successful Whitespace Handling
+
 ![Screenshot5](/images/output4.PNG)<br />
 
