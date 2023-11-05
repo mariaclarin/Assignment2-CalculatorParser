@@ -10,7 +10,7 @@ This image shows that the error detection is working properly
 ![Screenshot3](/images/output3.PNG)<br />
 This is the image of the drawing for legal and ilegal strings
 ![Screenshot4](/images/Drawing-on-paper.jpg)<br />
-And finally here is a screenshot for whitespace handling
+And finally here is a screenshot for whitespace handling<br />
 ![Screenshot5](/images/output4.PNG)<br />
 
 
