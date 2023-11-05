@@ -11,7 +11,7 @@ This image shows that the error detection is working properly
 This is the image of the drawing for legal and ilegal strings
 ![Screenshot4](/images/Drawing-on-paper.jpg)<br />
 And finally here is a screenshot for whitespace handling
-![Screenshot2](/images/output4.PNG)<br />
+![Screenshot5](/images/output4.PNG)<br />
 
 
 # Thank you sir
